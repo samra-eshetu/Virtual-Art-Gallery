@@ -1,98 +1,117 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import React from "react";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const artWorks = [
+  {
+    id: 1,
+    title: "Church Painting (Traditional Icon)",
+    artist: "Ethiopian Orthodox Art",
+    imageUrl:
+      "https://upload.wikimedia.org/wikipedia/commons/3/31/Ethiopian_Church_Painting_%282262019698%29.jpg",
+  },
+  {
+    id: 2,
+    title: "Miracles of Archangel Michael",
+    artist: "Folding Processional Icon",
+    imageUrl:
+      "https://i0.wp.com/farm8.staticflickr.com/7399/8719769427_8bf0acd774_o.jpg",
+  },
+  {
+    id: "3",
+    title: "Folding Processional Icon",
+    artist: "Ethiopian Sacred Art",
+    uri: "https://apollo-magazine.com/wp-content/uploads/2023/12/1.5-Folding-Processional-Icon-in-the-Shape-of-a-Fan-LEAD.jpg?fit=1000%2C667",
+  },
+  {
+    id: "4",
+    title: "Last Supper (Monastery Painting)",
+    artist: "Traditional Ethiopian",
+    uri: "https://media.istockphoto.com/id/172485431/photo/last-supper-painting-in-ethiopian-monastery.jpg?s=612x612&w=0&k=20&c=JGfxXMZN75LExPE85XfaRIUmrlXwoqzpf29Z8gJccNs=",
+  },
+  {
+    id: "5",
+    title: "Self-Portrait in the Studio",
+    artist: "Afewerk Tekle",
+    uri: "https://sothebys-com.brightspotcdn.com/dims4/default/c0a7373/2147483647/strip/false/crop/3373x1897+0+400/resize/1200x675!/quality/90/?url=http%3A%2F%2Fsothebys-brightspot.s3.amazonaws.com%2Fdotcom%2F70%2F75%2F341aaa474b73bc4c77a3f58873cc%2F080l18802-9x428-1.jpg",
+  },
+  {
+    id: "6",
+    title: "The Horrors of War",
+    artist: "Afewerk Tekle",
+    uri: "https://c8.alamy.com/comp/2F34TGK/london-uk-15th-mar-2021-geoffrey-ernest-katantazi-mukasa-ugandan-1954-2009-contrapposto-in-blue-est-5000-8000-and-afewerk-tekle-ethiopian-1932-2012-the-horrors-of-war-no-3-est-4000-6000-preview-of-bonhams-modern-contemporary-african-art-sale-at-bonhams-new-bond-street-the-sale-itself-will-take-place-on-wednesday-17-march-credit-guy-bellalamy-live-news-2F34TGK.jpg",
+  },
+  {
+    id: "7",
+    title: "Bet Giyorgis (Lalibela)",
+    artist: "Rock-Hewn Church",
+    uri: "https://www.world-archaeology.com/wp-content/uploads/2006/07/H-Beta-Giyorgis-plus-pilgrims.jpg",
+  },
+  {
+    id: "8",
+    title: "Traditional Coffee Ceremony",
+    artist: "Ethiopian Culture",
+    uri: "https://www.orinococoffeeandtea.com/wp-content/uploads/2022/05/iStock-1300998594.jpg",
+  },
+];
 
-export default function HomeScreen() {
+export default function ArtGallery() {
+  const renderItem = ({ item }: { item: (typeof artWorks)[0] }) => (
+    <TouchableOpacity style={Styles.item}>
+      <Image
+        source={{ uri: item.imageUrl || item.uri }}
+        style={Styles.image}
+        resizeMode="cover"
+      />
+      <View style={Styles.info}>
+        <Text style={Styles.title}>{item.title}</Text>
+        <Text style={Styles.artist}>{item.artist}</Text>
+      </View>
+    </TouchableOpacity>
+  );
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
-
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={Styles.container}>
+      <Text style={Styles.header}>Virtual Art Gallery 🎨 </Text>
+      <FlatList
+        data={artWorks}
+        renderItem={renderItem}
+        keyExtractor={(item) => String(item.id)}
+        numColumns={2}
+        contentContainerStyle={Styles.list}
+      />
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+const Styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#f9f5f0" },
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 20,
+    color: "#4a2c2a",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  list: { padding: 10 },
+  item: {
+    flex: 1,
+    margin: 8,
+    backgroundColor: "white",
+    borderRadius: 16,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  image: { width: "100%", height: 220 },
+  info: { padding: 12 },
+  title: { fontSize: 16, fontWeight: "600", textAlign: "center" },
+  artist: { fontSize: 14, color: "#666", textAlign: "center", marginTop: 4 },
 });
