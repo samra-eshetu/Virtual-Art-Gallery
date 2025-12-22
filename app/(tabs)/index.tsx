@@ -21,7 +21,7 @@ const artWorks = [
     title: "Miracles of Archangel Michael",
     artist: "Folding Processional Icon",
     imageUrl:
-      "https://i0.wp.com/farm8.staticflickr.com/7399/8719769427_8bf0acd774_o.jpg",
+      "https://commons.wikimedia.org/wiki/File:ET_Amhara_asv2018-02_img088_Lake_Tana_at_Bahir_Dar.jpg",
   },
   {
     id: "3",
@@ -77,7 +77,8 @@ export default function ArtGallery() {
   );
   return (
     <View style={Styles.container}>
-      <Text style={Styles.header}>Virtual Art Gallery 🎨 </Text>
+      <Text style={Styles.header}>የኢትዮጵያ ሥነ ጥበብ ማዕከል 🎨 </Text>
+
       <FlatList
         data={artWorks}
         renderItem={renderItem}
@@ -96,7 +97,14 @@ const Styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginVertical: 20,
+    marginTop: 70,
     color: "#4a2c2a",
+  },
+  subtitle: {
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#556b2f",
   },
   list: { padding: 10 },
   item: {
