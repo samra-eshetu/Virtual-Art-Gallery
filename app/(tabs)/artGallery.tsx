@@ -5,13 +5,22 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import React from "react";
 import { artWorks } from "../data/artWorks";
 
 export default function ArtGallery() {
+  const { width } = useWindowDimensions();
+  let numColumns = 2; //default for phones
+  if (width >= 768) numColumns = 3; //tablets
+  if (width >= 1200) numColumns = 4; //desktops
+
+  const ITEM_MARGIN = 8;
+  const ITEM_WIDTH = (width - ITEM_MARGIN * (numColumns + 1)) / numColumns;
+
   const renderItem = ({ item }: { item: (typeof artWorks)[0] }) => (
-    <TouchableOpacity style={Styles.item}>
+    <TouchableOpacity style={[Styles.item, { width: ITEM_WIDTH }]}>
       <Image
         source={{ uri: item.imageUrl }}
         style={Styles.image}
@@ -28,10 +37,11 @@ export default function ArtGallery() {
       <Text style={Styles.header}>የኢትዮጵያ ሥነ ጥበብ ማዕከል 🎨 </Text>
 
       <FlatList
+        key={numColumns}
         data={Array.isArray(artWorks) ? artWorks : []}
         renderItem={renderItem}
         keyExtractor={(item) => String(item.id)}
-        numColumns={2}
+        numColumns={numColumns} //dynamic column count based on screen width
         contentContainerStyle={Styles.list}
       />
     </View>
