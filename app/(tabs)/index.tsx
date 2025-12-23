@@ -1,25 +1,26 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   View,
   Text,
   Image,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
+  Animated,
+  useWindowDimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { artWorks } from "../data/artWorks";
-import { useWindowDimensions } from "react-native";
 export default function Home() {
   const router = useRouter();
   const { width } = useWindowDimensions();
-
   const featuredArtWorks = artWorks.slice(0, 3);
-  const isTabletOrDesktop = width >= 768;
+  const scrollX = useRef(new Animated.Value(0)).current;
+  const MAX_WIDTH = 420;
+  const ITEM_WIDTH = Math.min(width * 0.8, MAX_WIDTH);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/*Heaader Section with subtitle*/}
+    <View style={styles.container}>
+      {/*Header Section with subtitle*/}
       <View style={styles.header}>
         <Text style={styles.title}>Ethiopian Art Gallery</Text>
         <Text style={styles.subtitle}>
@@ -27,30 +28,51 @@ export default function Home() {
         </Text>
       </View>
       {/*Grid of Featured artworks*/}
-      <ScrollView
+      <Animated.FlatList
+        scrollEventThrottle={16}
+        data={featuredArtWorks}
+        keyExtractor={(item) => String(item.id)}
         horizontal
         showsHorizontalScrollIndicator={false}
-        // style={[styles.teaserGrid, isTabletOrDesktop && styles.teaserGridLarge]}
-      >
-        {featuredArtWorks.map((item) => (
-          <View
-            key={item.id}
-            style={[
-              styles.teaserGrid,
-              isTabletOrDesktop && styles.teaserGridLarge,
-            ]}
-          >
+        pagingEnabled
+        snapToInterval={ITEM_WIDTH}
+        contentContainerStyle={{
+          paddingHorizontal: (width - ITEM_WIDTH) / 2,
+        }}
+        decelerationRate="fast"
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: false }
+        )}
+        renderItem={({ item }) => (
+          <View style={[styles.carouselItem, { width: ITEM_WIDTH }]}>
             <Image
-              key={item.id}
               source={{ uri: item.imageUrl }}
               style={styles.teaserImage}
               resizeMode="cover"
-              // Optional: Show placeholder if image fails
-              onError={() => console.log("Image failed:", item.imageUrl)}
             />
           </View>
-        ))}
-      </ScrollView>
+        )}
+      />
+      {/* Pagination Dots */}
+      <View style={styles.dotsContainer}>
+        {featuredArtWorks.map((_, index) => {
+          const inputRange = [
+            (index - 1) * ITEM_WIDTH,
+            index * ITEM_WIDTH,
+            (index + 1) * ITEM_WIDTH,
+          ];
+
+          const opacity = scrollX.interpolate({
+            inputRange,
+            outputRange: [0.3, 1, 0.3],
+            extrapolate: "clamp",
+          });
+          return (
+            <Animated.View key={index} style={[styles.dot, { opacity }]} />
+          );
+        })}
+      </View>
 
       {/* Debug message if no images */}
       {featuredArtWorks.length === 0 && (
@@ -66,7 +88,7 @@ export default function Home() {
       >
         <Text style={styles.buttonText}>Get Started</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
@@ -76,13 +98,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingBottom: 40,
   },
+  carouselItem: {
+    height: 220,
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  dotsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 10,
+  },
+
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#4a2c2a",
+    marginHorizontal: 6,
+  },
+
   header: {
     alignItems: "center",
     marginTop: 60,
     marginBottom: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 36,
     fontWeight: "bold",
     color: "#4a2c2a",
   },
