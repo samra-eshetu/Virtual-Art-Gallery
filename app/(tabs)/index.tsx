@@ -73,6 +73,15 @@ export default function Home() {
           );
         })}
       </View>
+      {/*Welcome Message */}
+      <View style={styles.welcomeSection}>
+        <Text style={styles.welcomeText}>
+          Immerse yourself in centuries of sacred traditions,{"\n"}
+          vibrant colors, and spiritual storytelling.{"\n\n"}
+          From ancient illuminated manuscripts{"\n"}
+          to modern masterpieces by Ethiopian Artists.
+        </Text>
+      </View>
 
       {/* Debug message if no images */}
       {featuredArtWorks.length === 0 && (
@@ -103,6 +112,24 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
+  },
+  welcomeSection: {
+    marginTop: 30,
+    marginVertical: 30,
+    paddingHorizontal: 40,
+    alignItems: "center",
+  },
+  welcomeText: {
+    fontSize: 16,
+    color: "#4a2c2a",
+    textAlign: "center",
+    lineHeight: 24,
+  },
+  separator: {
+    height: 1,
+    width: "60%",
+    backgroundColor: "#ddd",
+    marginVertical: 20,
   },
 
   dotsContainer: {
