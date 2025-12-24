@@ -10,24 +10,54 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-export default function Login() {
+{
+  /* Define schema for form validation */
+}
+const signupSchema = z.object({
+  userName: z.string().min(2, "Name must be at least 2 characters long"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number"),
+  birthdate: z.string().optional(),
+});
+
+type SignupFormData = z.infer<typeof signupSchema>;
+
+export default function Signup() {
   //To store what user types in each of the fields
   const router = useRouter();
-  const [userName, setUserName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [birthdate, setBirthdate] = useState("");
 
-  //Function called when user taps "Create Profile"
-  const handleCreateProfile = () => {
-    if (!userName || !email || !password) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-    console.log("Profile Created:", { userName, email, password, birthdate });
+  {
+    /*Setup React Hook form and Zod resolver*/
+  }
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      userName: "",
+      email: "",
+      password: "",
+      birthdate: "",
+    },
+  });
+  {
+    /*Form submit handler*/
+  }
+  const onSubmit = (data: SignupFormData) => {
+    console.log("Profile created successfully:", data);
     router.replace("/(tabs)/artGallery");
   };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -46,47 +76,97 @@ export default function Login() {
           <Text style={styles.illustration}>🎨</Text>
         </View>
 
-        {/*Input fields*/}
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          placeholderTextColor="#aaa"
-          value={userName}
-          onChangeText={setUserName}
-          autoCapitalize="words"
+        {/*Input fields with controller and react-hook-form*/}
+        <Controller
+          control={control}
+          name="userName"
+          render={({ field: { onChange, value } }) => (
+            <>
+              <TextInput
+                style={[
+                  styles.input,
+                  errors.userName && { borderColor: "#ff6b6b" },
+                ]}
+                placeholder="Full Name"
+                placeholderTextColor="#aaa"
+                value={value}
+                onChangeText={onChange}
+                autoCapitalize="words"
+              />
+              {errors.userName && (
+                <Text style={styles.errorText}>{errors.userName.message}</Text>
+              )}
+            </>
+          )}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="Email Address"
-          placeholderTextColor="#aaa"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, value } }) => (
+            <>
+              <TextInput
+                style={[
+                  styles.input,
+                  errors.email && { borderColor: "#ff6b6b" },
+                ]}
+                placeholder="Email Address"
+                placeholderTextColor="#aaa"
+                value={value}
+                onChangeText={onChange}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              {errors.email && (
+                <Text style={styles.errorText}>{errors.email.message}</Text>
+              )}
+            </>
+          )}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="password"
-          placeholderTextColor="#aaa"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
+        <Controller
+          control={control}
+          name="password"
+          render={({ field: { onChange, value } }) => (
+            <>
+              <TextInput
+                style={[
+                  styles.input,
+                  errors.password && { borderColor: "#ff6b6b" },
+                ]}
+                placeholder="Password"
+                placeholderTextColor="#aaa"
+                value={value}
+                onChangeText={onChange}
+                secureTextEntry
+                autoCapitalize="none"
+              />
+              {errors.password && (
+                <Text style={styles.errorText}>{errors.password.message}</Text>
+              )}
+            </>
+          )}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="birthdate (optional)"
-          placeholderTextColor="#aaa"
-          value={birthdate}
-          onChangeText={setBirthdate}
+        <Controller
+          control={control}
+          name="birthdate"
+          render={({ field: { onChange, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="Birthdate (optional)"
+              placeholderTextColor="#aaa"
+              value={value}
+              onChangeText={onChange}
+            />
+          )}
         />
 
         {/*Create Profile Button*/}
         <TouchableOpacity
           style={styles.createButton}
-          onPress={handleCreateProfile}
+          onPress={handleSubmit(onSubmit)}
         >
           <Text style={styles.buttonText}>Create Profile</Text>
         </TouchableOpacity>
+
         {/*link to login page*/}
         <TouchableOpacity style={styles.linkContainer}>
           <Text style={styles.linkText}>Already have an account? Login</Text>
@@ -134,6 +214,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
+  },
+  errorText: {
+    color: "#ff6b6b",
+    fontSize: 14,
+    marginBottom: 8,
+    marginLeft: 4,
   },
   createButton: {
     backgroundColor: "#4a2c2a",
