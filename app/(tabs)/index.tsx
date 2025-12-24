@@ -93,7 +93,7 @@ export default function Home() {
       {/*Get Started Button*/}
       <TouchableOpacity
         style={styles.getStartedButton}
-        onPress={() => router.push("/login")}
+        onPress={() => router.push("/signup")}
       >
         <Text style={styles.buttonText}>Get Started</Text>
       </TouchableOpacity>

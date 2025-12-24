@@ -39,7 +39,7 @@ export default function Login() {
         overScrollMode="never"
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.title}>Login / Signup</Text>
+        <Text style={styles.title}> Join the Gallery</Text>
 
         {/*illustration placeholder*/}
         <View style={styles.illustrationContainer}>
