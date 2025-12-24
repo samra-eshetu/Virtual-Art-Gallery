@@ -2,11 +2,11 @@ import React from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
-  Platform,
+  TextInput,
   KeyboardAvoidingView,
+  Platform,
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -14,47 +14,30 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
-{
-  /* Define schema for form validation */
-}
-const signupSchema = z.object({
-  userName: z.string().min(2, "Name must be at least 2 characters long"),
+const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Password must contain at least one number"),
-  birthdate: z.string().optional(),
+  password: z.string().min(8, "Password is required"),
 });
 
-type SignupFormData = z.infer<typeof signupSchema>;
+type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function Signup() {
-  //To store what user types in each of the fields
+export default function Login() {
   const router = useRouter();
 
-  {
-    /*Setup React Hook form and Zod resolver*/
-  }
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupFormData>({
-    resolver: zodResolver(signupSchema),
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
-      userName: "",
       email: "",
       password: "",
-      birthdate: "",
     },
   });
-  {
-    /*Form submit handler*/
-  }
-  const onSubmit = (data: SignupFormData) => {
-    console.log("Profile created successfully:", data);
+
+  const onSubmit = (data: LoginFormData) => {
+    console.log("Login Successful:", data);
     router.replace("/(tabs)/artGallery");
   };
 
@@ -63,42 +46,12 @@ export default function Signup() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        bounces={true}
-        overScrollMode="never"
-        keyboardShouldPersistTaps="handled"
-      >
-        <Text style={styles.title}> Join the Gallery</Text>
-
-        {/*illustration placeholder*/}
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.title}>Welcome Back</Text>
         <View style={styles.illustrationContainer}>
           <Text style={styles.illustration}>🎨</Text>
         </View>
-
-        {/*Input fields with controller and react-hook-form*/}
-        <Controller
-          control={control}
-          name="userName"
-          render={({ field: { onChange, value } }) => (
-            <>
-              <TextInput
-                style={[
-                  styles.input,
-                  errors.userName && { borderColor: "#ff6b6b" },
-                ]}
-                placeholder="Full Name"
-                placeholderTextColor="#aaa"
-                value={value}
-                onChangeText={onChange}
-                autoCapitalize="words"
-              />
-              {errors.userName && (
-                <Text style={styles.errorText}>{errors.userName.message}</Text>
-              )}
-            </>
-          )}
-        />
+        {/* Email */}
         <Controller
           control={control}
           name="email"
@@ -122,6 +75,8 @@ export default function Signup() {
             </>
           )}
         />
+
+        {/* Password */}
         <Controller
           control={control}
           name="password"
@@ -145,34 +100,19 @@ export default function Signup() {
             </>
           )}
         />
-        <Controller
-          control={control}
-          name="birthdate"
-          render={({ field: { onChange, value } }) => (
-            <TextInput
-              style={styles.input}
-              placeholder="Birthdate (optional)"
-              placeholderTextColor="#aaa"
-              value={value}
-              onChangeText={onChange}
-            />
-          )}
-        />
-
-        {/*Create Profile Button*/}
+        {/*Login Button */}
         <TouchableOpacity
-          style={styles.createButton}
+          style={styles.loginButton}
           onPress={handleSubmit(onSubmit)}
         >
-          <Text style={styles.buttonText}>Create Profile</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-
-        {/*link to login page*/}
+        {/*Link to signup */}
         <TouchableOpacity
           style={styles.linkContainer}
-          onPress={() => router.push("/login")}
+          onPress={() => router.push("/signup")}
         >
-          <Text style={styles.linkText}> Already have an account? Login</Text>
+          <Text style={styles.linkText}> Do not have an account? Signup</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -188,35 +128,30 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     paddingHorizontal: 40,
-    paddingVertical: 25,
+    paddingVertical: 60,
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#4a2c2a",
     textAlign: "center",
-    marginBottom: 0,
-    marginTop: 0,
+    marginBottom: 40,
   },
   illustrationContainer: {
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 50,
   },
   illustration: {
-    fontSize: 160,
+    fontSize: 180,
   },
   input: {
     backgroundColor: "white",
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: 12,
     borderWidth: 1,
     borderColor: "#d4a373",
-    shadowColor: "#000",
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
   },
   errorText: {
     color: "#ff6b6b",
@@ -224,12 +159,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginLeft: 4,
   },
-  createButton: {
+  loginButton: {
     backgroundColor: "#4a2c2a",
     paddingVertical: 18,
     borderRadius: 30,
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 20,
   },
   buttonText: {
     color: "white",
