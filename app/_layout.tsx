@@ -7,7 +7,7 @@ import { Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { TouchableOpacity, Text } from "react-native";
-
+import { ChevronLeft } from "lucide-react-native";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function RootLayout() {
@@ -29,21 +29,17 @@ export default function RootLayout() {
               onPress={() => router.replace("/(tabs)")} // Force go to Home tab root
               style={{
                 marginLeft: 0,
-                padding: 8,
+                padding: 0,
                 flexDirection: "row",
-                alignItems: "baseline",
+                alignItems: "center",
               }}
             >
-              <Text
-                style={{
-                  color: "#4a2c2a",
-                  fontSize: 24,
-                  fontWeight: "bold",
-                  marginRight: 6,
-                }}
-              >
-                {"<"}
-              </Text>
+              <ChevronLeft
+                size={28}
+                color="#4a2c2a"
+                strokeWidth={2.5}
+                style={{ marginRight: 6 }}
+              />
               <Text
                 style={{ color: "#4a2c2a", fontWeight: "bold", fontSize: 17 }}
               >
