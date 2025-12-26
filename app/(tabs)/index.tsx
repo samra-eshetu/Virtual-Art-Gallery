@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   welcomeSection: {
-    marginTop: 30,
+    marginTop: 0,
     marginVertical: 30,
     paddingHorizontal: 40,
     alignItems: "center",
@@ -144,11 +144,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: "#4a2c2a",
     marginHorizontal: 6,
+    marginBottom: 10,
+    marginTop: 0,
   },
 
   header: {
     alignItems: "center",
-    marginTop: 60,
+    marginTop: 20,
     marginBottom: 20,
   },
   title: {

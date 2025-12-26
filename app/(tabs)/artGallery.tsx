@@ -34,7 +34,7 @@ export default function ArtGallery() {
   );
   return (
     <View style={Styles.container}>
-      <Text style={Styles.header}>የኢትዮጵያ ሥነ ጥበብ ማዕከል 🎨 </Text>
+      <Text style={Styles.header}>Art Collection 🎨 </Text>
 
       <FlatList
         key={numColumns}
@@ -55,7 +55,7 @@ const Styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginVertical: 20,
-    marginTop: 70,
+    marginTop: 0,
     color: "#4a2c2a",
   },
   subtitle: {

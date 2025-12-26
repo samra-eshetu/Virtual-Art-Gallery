@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#4a2c2a",
     textAlign: "center",
-    marginBottom: 40,
+    marginBottom: 0,
+    marginTop: 0,
   },
   illustrationContainer: {
     alignItems: "center",
