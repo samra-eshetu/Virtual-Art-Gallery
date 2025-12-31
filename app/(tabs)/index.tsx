@@ -22,7 +22,6 @@ export default function Home() {
     <View style={styles.container}>
       {/*Header Section with subtitle*/}
       <View style={styles.header}>
-        <Text style={styles.title}>Ethiopian Art Gallery</Text>
         <Text style={styles.subtitle}>
           Discover the beauty of Ethiopian art
         </Text>
