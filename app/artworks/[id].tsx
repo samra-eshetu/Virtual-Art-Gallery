@@ -1,3 +1,4 @@
+// app/artworks/[id].tsx
 import {
   View,
   StyleSheet,
@@ -6,13 +7,18 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Heart } from "lucide-react-native";
+import { useState } from "react"; // For favorite toggle
+
 export default function ArtworkDetail() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
 
-  //Mock data
+  // State for favorite toggle
+  const [isFavorited, setIsFavorited] = useState(false);
+
+  // Mock data
   const artWork = {
     id,
     title: "Holy Trinity Icon",
@@ -32,6 +38,10 @@ export default function ArtworkDetail() {
       "and personal prayer.",
   };
 
+  const toggleFavorite = () => {
+    setIsFavorited(!isFavorited);
+  };
+
   return (
     <ScrollView style={styles.container}>
       {/* Full-width artwork image */}
@@ -43,8 +53,19 @@ export default function ArtworkDetail() {
 
       {/* Content container */}
       <View style={styles.content}>
-        {/* Title */}
-        <Text style={styles.title}>{artWork.title}</Text>
+        {/* Title + Favorite button side by side */}
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{artWork.title}</Text>
+
+          {/* Smaller favorite button next to title */}
+          <TouchableOpacity onPress={toggleFavorite} style={styles.smallFavorite}>
+            <Heart
+              size={24}                    // Smaller size
+              color="#4a2c2a"              // Outline color
+              fill={isFavorited ? "#4a2c2a" : "transparent"} // Filled when favorited
+            />
+          </TouchableOpacity>
+        </View>
 
         {/* Artist & Date */}
         <Text style={styles.subtitle}>
@@ -53,20 +74,6 @@ export default function ArtworkDetail() {
 
         {/* Description */}
         <Text style={styles.description}>{artWork.description}</Text>
-
-        {/* Favorite Button (optional) */}
-        <TouchableOpacity style={styles.favoriteButton}>
-          <Heart size={24} color="#fff" fill="#fff" />
-          <Text style={styles.favoriteText}>Add to Favorites</Text>
-        </TouchableOpacity>
-
-        {/* Back Button (optional - native back usually works fine) */}
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <Text style={styles.backText}>← Back to Gallery</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -84,11 +91,26 @@ const styles = StyleSheet.create({
   content: {
     padding: 24,
   },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
   title: {
     fontSize: 32,
     fontWeight: "bold",
     color: "#4a2c2a",
-    marginBottom: 8,
+    flex: 1, // Title takes most space
+  },
+  smallFavorite: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 12,
+    backgroundColor: "rgba(74,44,42,0.1)", // Very subtle background
   },
   subtitle: {
     fontSize: 18,
@@ -100,32 +122,5 @@ const styles = StyleSheet.create({
     lineHeight: 26,
     color: "#333",
     marginBottom: 32,
-  },
-  favoriteButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#4a2c2a",
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignSelf: "flex-start",
-    marginBottom: 24,
-  },
-  favoriteText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginLeft: 12,
-  },
-  backButton: {
-    padding: 12,
-    backgroundColor: "#ddd",
-    borderRadius: 12,
-    alignSelf: "flex-start",
-  },
-  backText: {
-    color: "#4a2c2a",
-    fontSize: 14,
-    fontWeight: "600",
   },
 });
