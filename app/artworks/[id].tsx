@@ -10,7 +10,21 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Heart } from "lucide-react-native";
 import { useState } from "react"; // For favorite toggle
-
+import type { HeaderBackButtonProps } from '@react-navigation/elements';
+ArtworkDetail.options={
+  headerShown: true,
+  title: "Artwork Detail",
+  headerLeft:({tintColor}: HeaderBackButtonProps)=>(
+    <TouchableOpacity
+    onPress={()=> useRouter().back()}
+    style={{marginLeft: 16}}>
+      <Text style={{fontSize:32, color: tintColor || "#4a2c2a", fontWeight: "bold"}}>
+        ←
+      </Text>
+    </TouchableOpacity>
+  ),
+  headerRight: ()=>null,
+};
 export default function ArtworkDetail() {
   const { id } = useLocalSearchParams();
   const router = useRouter();

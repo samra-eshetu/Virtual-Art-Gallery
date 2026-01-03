@@ -4,25 +4,26 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Drawer } from "expo-router/drawer"; // Drawer root
+import { Drawer } from "expo-router/drawer";
 import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
-import { DrawerToggleButton } from "@react-navigation/drawer"; // ← Official hamburger
+import { TouchableOpacity, Text } from "react-native";
+import { useRouter, usePathname } from "expo-router";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const isDetailPage = pathname.startsWith("/artworks");
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Drawer
         screenOptions={{
-          drawerStyle: {
-            backgroundColor: "#f9f5f0",
-            width: 280,
-          },
+          drawerStyle: { backgroundColor: "#f9f5f0", width: 280 },
           drawerActiveTintColor: "#4a2c2a",
           drawerInactiveTintColor: "#666",
           drawerLabelStyle: { fontSize: 16, fontWeight: "500" },
@@ -33,16 +34,25 @@ export default function RootLayout() {
           headerTitleStyle: { fontWeight: "bold", fontSize: 20 },
           headerTitleAlign: "center",
 
-          // Show official hamburger (☰) + optional custom elements
-          headerLeft: () => (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              {/* Hamburger menu icon - opens drawer */}
-              <DrawerToggleButton tintColor="#4a2c2a" />
-
-              {/* Optional: your custom back arrow if needed on some screens */}
-              {/* Remove or move to individual screens */}
-            </View>
-          ),
+          // Only override headerLeft on detail pages
+          headerLeft: isDetailPage
+            ? () => (
+                <TouchableOpacity
+                  onPress={() => router.back()}
+                  style={{ marginLeft: 16 }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 26,
+                      color: "#4a2c2a",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ←
+                  </Text>
+                </TouchableOpacity>
+              )
+            : undefined, // ← IMPORTANT: undefined means "use default Drawer toggle"
         }}
       >
         <Drawer.Screen
@@ -53,7 +63,6 @@ export default function RootLayout() {
             headerShown: true,
           }}
         />
-
         <Drawer.Screen
           name="explore"
           options={{
@@ -61,7 +70,6 @@ export default function RootLayout() {
             title: "Explore Artworks",
           }}
         />
-
         <Drawer.Screen
           name="mapping"
           options={{
@@ -69,7 +77,6 @@ export default function RootLayout() {
             title: "Interactive Mapping",
           }}
         />
-
         <Drawer.Screen
           name="compare"
           options={{
@@ -77,16 +84,11 @@ export default function RootLayout() {
             title: "Compare Artworks",
           }}
         />
-
         <Drawer.Screen
           name="profile"
-          options={{
-            drawerLabel: "Profile",
-            title: "My Profile",
-          }}
+          options={{ drawerLabel: "Profile", title: "My Profile" }}
         />
       </Drawer>
-
       <StatusBar style="auto" />
     </ThemeProvider>
   );
