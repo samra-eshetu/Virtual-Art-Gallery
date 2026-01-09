@@ -8,30 +8,30 @@ import {
   useWindowDimensions,
 } from "react-native";
 import React from "react";
-import {useRouter} from 'expo-router';
+import { useRouter } from "expo-router"; // Already there, good!
 import { artWorks } from "../data/artWorks";
 
 export default function ArtGallery() {
   const { width } = useWindowDimensions();
   const router = useRouter();
-  let numColumns = 2; //default for phones
-  if (width >= 768) numColumns = 3; //tablets
-  if (width >= 1200) numColumns = 4; //desktops
+  let numColumns = 2; // default for phones
+  if (width >= 768) numColumns = 3; // tablets
+  if (width >= 1200) numColumns = 4; // desktops
 
   const ITEM_MARGIN = 8;
   const ITEM_WIDTH = (width - ITEM_MARGIN * (numColumns + 1)) / numColumns;
 
   const renderItem = ({ item }: { item: (typeof artWorks)[0] }) => (
     <TouchableOpacity
-  onPress={() => {
-    router.push({
-      pathname: '/artworks/[id]',
-      params: { id: item.id }
-    });
-  }}
-  style={[Styles.item, { width: ITEM_WIDTH }]}
->
-      
+      onPress={() => {
+        // This is the correct place for router.push
+        router.push({
+          pathname: "/artworks/[id]",
+          params: { id: item.id, title: item.title },
+        });
+      }}
+      style={[Styles.item, { width: ITEM_WIDTH }]}
+    >
       <Image
         source={{ uri: item.imageUrl }}
         style={Styles.image}
@@ -43,6 +43,7 @@ export default function ArtGallery() {
       </View>
     </TouchableOpacity>
   );
+
   return (
     <View style={Styles.container}>
       <FlatList
@@ -50,7 +51,7 @@ export default function ArtGallery() {
         data={Array.isArray(artWorks) ? artWorks : []}
         renderItem={renderItem}
         keyExtractor={(item) => String(item.id)}
-        numColumns={numColumns} //dynamic column count based on screen width
+        numColumns={numColumns}
         contentContainerStyle={Styles.list}
       />
     </View>

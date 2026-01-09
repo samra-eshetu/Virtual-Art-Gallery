@@ -1,4 +1,3 @@
-// app/artworks/[id].tsx
 import {
   View,
   StyleSheet,
@@ -7,35 +6,22 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Heart } from "lucide-react-native";
-import { useState } from "react"; // For favorite toggle
-import type { HeaderBackButtonProps } from '@react-navigation/elements';
-ArtworkDetail.options={
-  headerShown: true,
-  title: "Artwork Detail",
-  headerLeft:({tintColor}: HeaderBackButtonProps)=>(
-    <TouchableOpacity
-    onPress={()=> useRouter().back()}
-    style={{marginLeft: 16}}>
-      <Text style={{fontSize:32, color: tintColor || "#4a2c2a", fontWeight: "bold"}}>
-        ←
-      </Text>
-    </TouchableOpacity>
-  ),
-  headerRight: ()=>null,
-};
+import { useState } from "react";
+
 export default function ArtworkDetail() {
-  const { id } = useLocalSearchParams();
+  const { id, title } = useLocalSearchParams<{
+    id: string;
+    title?: string;
+  }>();
   const router = useRouter();
 
-  // State for favorite toggle
   const [isFavorited, setIsFavorited] = useState(false);
 
-  // Mock data
   const artWork = {
     id,
-    title: "Holy Trinity Icon",
+    title: title ?? "Holy Trinity Icon",
     artist: "Unknown Master",
     date: "15th Century",
     image:
@@ -52,44 +38,63 @@ export default function ArtworkDetail() {
       "and personal prayer.",
   };
 
-  const toggleFavorite = () => {
-    setIsFavorited(!isFavorited);
-  };
-
   return (
-    <ScrollView style={styles.container}>
-      {/* Full-width artwork image */}
-      <Image
-        source={{ uri: artWork.image }}
-        style={styles.image}
-        resizeMode="cover"
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          title: artWork.title,
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={{ marginLeft: 16 }}
+            >
+              <Text
+                style={{
+                  fontSize: 32,
+                  color: "#4a2c2a",
+                  fontWeight: "bold",
+                }}
+              >
+                ←
+              </Text>
+            </TouchableOpacity>
+          ),
+          headerRight: () => null,
+        }}
       />
 
-      {/* Content container */}
-      <View style={styles.content}>
-        {/* Title + Favorite button side by side */}
-        <View style={styles.titleRow}>
-          <Text style={styles.title}>{artWork.title}</Text>
+      <ScrollView style={styles.container}>
+        <Image
+          source={{ uri: artWork.image }}
+          style={styles.image}
+          resizeMode="cover"
+        />
 
-          {/* Smaller favorite button next to title */}
-          <TouchableOpacity onPress={toggleFavorite} style={styles.smallFavorite}>
-            <Heart
-              size={24}                    // Smaller size
-              color="#4a2c2a"              // Outline color
-              fill={isFavorited ? "#4a2c2a" : "transparent"} // Filled when favorited
-            />
-          </TouchableOpacity>
+        <View style={styles.content}>
+          <View style={styles.titleRow}>
+            <Text style={styles.title}>{artWork.title}</Text>
+
+            <TouchableOpacity
+              onPress={() => setIsFavorited(!isFavorited)}
+              style={styles.smallFavorite}
+            >
+              <Heart
+                size={24}
+                color="#4a2c2a"
+                fill={isFavorited ? "#4a2c2a" : "transparent"}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.subtitle}>
+            {artWork.artist} • {artWork.date}
+          </Text>
+
+          <Text style={styles.description}>{artWork.description}</Text>
         </View>
-
-        {/* Artist & Date */}
-        <Text style={styles.subtitle}>
-          {artWork.artist} • {artWork.date}
-        </Text>
-
-        {/* Description */}
-        <Text style={styles.description}>{artWork.description}</Text>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </>
   );
 }
 
@@ -115,7 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "bold",
     color: "#4a2c2a",
-    flex: 1, // Title takes most space
+    flex: 1,
   },
   smallFavorite: {
     width: 40,
@@ -124,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 12,
-    backgroundColor: "rgba(74,44,42,0.1)", // Very subtle background
+    backgroundColor: "rgba(74,44,42,0.1)",
   },
   subtitle: {
     fontSize: 18,
