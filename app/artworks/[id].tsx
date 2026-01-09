@@ -8,16 +8,34 @@ import {
 } from "react-native";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Heart } from "lucide-react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import {
+  isFavorited,
+  toggleFavorites,
+  FavoriteItem,
+} from "../utils/favorites";
+
+type ArtworkParams = {
+  id: string;
+  title?: string;
+};
 
 export default function ArtworkDetail() {
-  const { id, title } = useLocalSearchParams<{
-    id: string;
-    title?: string;
-  }>();
+  const { id, title } = useLocalSearchParams<ArtworkParams>();
   const router = useRouter();
 
-  const [isFavorited, setIsFavorited] = useState(false);
+  const [isFav, setIsFav] = useState(false);
+
+  useEffect(() => {
+    const check = async () => {
+      if (id) {
+        const favorited = await isFavorited(id);
+        setIsFav(favorited);
+      }
+    };
+    check();
+  }, [id]);
 
   const artWork = {
     id,
@@ -25,21 +43,28 @@ export default function ArtworkDetail() {
     artist: "Unknown Master",
     date: "15th Century",
     image:
-      "https://media.istockphoto.com/id/1472548515/photo/painting-of-the-three-persons-of-the-holy-trinity-in-debre-berhan-selassie-church-gondar.jpg?s=612x612&w=0&k=20&c=1zWucdeoQ_bFz-3-7W65Spzvcwj2WLCFg1YyRryGXfI=",
+      "https://media.istockphoto.com/id/172485431/photo/last-supper-painting-in-ethiopian-monastery.jpg?s=170667a&w=0&k=20&c=PZ9Ws-3EYkMfIFGlAqd3OukIfVGsb8oG3HAiskxA3do=",
     description:
       "This exquisite Holy Trinity Icon is a profound example of Ethiopian Orthodox iconography, " +
-      "blending ancient Byzantine influences with Ethiopia's unique artistic tradition. " +
-      "The composition portrays the Father, Son, and Holy Spirit in harmonious unity — " +
-      "often with Christ enthroned at the center, flanked by symbolic representations of the Father " +
-      "and the dove of the Holy Spirit. The rich palette of deep ultramarine blues, fiery reds, " +
-      "and radiant gold creates a powerful sense of divine presence. " +
-      "Painted with natural mineral pigments on gessoed wood, this sacred image has been central " +
-      "to Ethiopian Christian devotion for centuries, used in churches, processions, " +
-      "and personal prayer.",
+      "blending ancient Byzantine influences with Ethiopia's unique artistic tradition.",
+  };
+
+  const handleToggle = async () => {
+    const item: FavoriteItem = {
+      id: artWork.id,
+      title: artWork.title,
+      artist: artWork.artist,
+      date: artWork.date,
+      image: artWork.image,
+    };
+
+    const newState = await toggleFavorites(item);
+    setIsFav(newState);
   };
 
   return (
     <>
+      {/* ✅ THIS IS THE ONLY CORRECT HEADER CONFIG */}
       <Stack.Screen
         options={{
           headerShown: true,
@@ -76,13 +101,13 @@ export default function ArtworkDetail() {
             <Text style={styles.title}>{artWork.title}</Text>
 
             <TouchableOpacity
-              onPress={() => setIsFavorited(!isFavorited)}
+              onPress={handleToggle}
               style={styles.smallFavorite}
             >
               <Heart
                 size={24}
                 color="#4a2c2a"
-                fill={isFavorited ? "#4a2c2a" : "transparent"}
+                fill={isFav ? "#4a2c2a" : "transparent"}
               />
             </TouchableOpacity>
           </View>
@@ -99,17 +124,9 @@ export default function ArtworkDetail() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f9f5f0",
-  },
-  image: {
-    width: "100%",
-    height: 450,
-  },
-  content: {
-    padding: 24,
-  },
+  container: { flex: 1, backgroundColor: "#f9f5f0" },
+  image: { width: "100%", height: 450 },
+  content: { padding: 24 },
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -131,15 +148,6 @@ const styles = StyleSheet.create({
     marginLeft: 12,
     backgroundColor: "rgba(74,44,42,0.1)",
   },
-  subtitle: {
-    fontSize: 18,
-    color: "#666",
-    marginBottom: 20,
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 26,
-    color: "#333",
-    marginBottom: 32,
-  },
+  subtitle: { fontSize: 18, color: "#666", marginBottom: 20 },
+  description: { fontSize: 16, lineHeight: 26, color: "#333" },
 });
