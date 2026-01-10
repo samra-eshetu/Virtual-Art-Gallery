@@ -4,7 +4,7 @@ import {
   Text,
   FlatList,
   Image,
-  TouchableOpacity,
+  
   StyleSheet,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -28,9 +28,11 @@ export default function Profile() {
     loadFavorites(); // Run when component mounts
   }, []); // Empty dependency array = run once on mount
 
+
   // Render each favorited artwork as a card
   const renderFavorite = ({ item }: { item: FavoriteItem }) => (
     <View style={styles.favItem}>
+      
       <Image
         source={{ uri: item.image }}
         style={styles.favImage}
@@ -45,9 +47,6 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      {/* Page header */}
-      <Text style={styles.header}>Your Favorites</Text>
-
       {/* If no favorites yet, show friendly message */}
       {favorites.length === 0 ? (
         <Text style={styles.empty}>
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f9f5f0",
-    padding: 16,
+    paddingHorizontal: 16,
   },
   header: {
     fontSize: 28,
