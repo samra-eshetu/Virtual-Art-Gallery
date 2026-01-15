@@ -80,7 +80,8 @@ const artPeriods = [
       {
         id: "mod1",
         title: "Emperor Menelik II Portrait",
-        image: "https://example.com/menelik.jpg",
+        image:
+          "https://media.istockphoto.com/id/1472548515/photo/painting-of-the-three-persons-of-the-holy-trinity-in-debre-berhan-selassie-church-gondar.jpg?s=612x612&w=0&k=20&c=1zWucdeoQ_bFz-3-7W65Spzvcwj2WLCFg1YyRryGXfI=",
       },
     ],
   },
