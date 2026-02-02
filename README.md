@@ -11,8 +11,6 @@ Browse famous paintings, view details, save favorites, and get daily art inspira
 - Daily featured artwork
 - Fully offline-capable (once images are loaded)
 
-## Screenshots
-(Add screenshots here later when you have them!)
 
 ## How to Run
 
